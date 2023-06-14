@@ -57,14 +57,22 @@ export const getCommandParams = async () => {
 }
 
 const validateCommandChecker = async (userCommand, match) => {
-  if (!match || match.length < 4)
-    await postError(`Invalid command: \`${userCommand}\`\n${COMMAND_USAGE}`)
+  const allowedExtensions = ['md', 'mdx'];
 
-  // TODO: Support other file types.
-  if (!match[1].endsWith('.md') || !match[2].endsWith('.md') || !match[1].endsWith('.mdx') || !match[2].endsWith('.mdx')) {
-    await postError('Error: File must be a markdown file.')
+  if (!match || match.length < 4)
+    await postError(`Invalid command: \`${userCommand}\`\n${COMMAND_USAGE}`);
+
+  // Check if files have allowed extensions
+  const file1Extension = match[1].split('.').pop();
+  const file2Extension = match[2].split('.').pop();
+
+  if (!allowedExtensions.includes(file1Extension) || !allowedExtensions.includes(file2Extension)) {
+    const errorMessage = `Error: Both files must have one of the following extensions: ${allowedExtensions.join(", ")}.\n` +
+                         `Found extensions: File1 - .${file1Extension}, File2 - .${file2Extension}`;
+    await postError(errorMessage);
   }
-}
+};
+
 
 export const postError = async (message: string) => {
   await gitPostComment(`❌${message}`)

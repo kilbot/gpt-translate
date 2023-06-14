@@ -22617,11 +22617,16 @@ const getCommandParams = async () => {
 };
 exports.getCommandParams = getCommandParams;
 const validateCommandChecker = async (userCommand, match) => {
+    const allowedExtensions = ['md', 'mdx'];
     if (!match || match.length < 4)
         await (0, exports.postError)(`Invalid command: \`${userCommand}\`\n${COMMAND_USAGE}`);
-    // TODO: Support other file types.
-    if (!match[1].endsWith('.md') || !match[2].endsWith('.md') || !match[1].endsWith('.mdx') || !match[2].endsWith('.mdx')) {
-        await (0, exports.postError)('Error: File must be a markdown file.');
+    // Check if files have allowed extensions
+    const file1Extension = match[1].split('.').pop();
+    const file2Extension = match[2].split('.').pop();
+    if (!allowedExtensions.includes(file1Extension) || !allowedExtensions.includes(file2Extension)) {
+        const errorMessage = `Error: Both files must have one of the following extensions: ${allowedExtensions.join(", ")}.\n` +
+            `Found extensions: File1 - .${file1Extension}, File2 - .${file2Extension}`;
+        await (0, exports.postError)(errorMessage);
     }
 };
 const postError = async (message) => {
