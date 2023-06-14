@@ -61,7 +61,7 @@ const validateCommandChecker = async (userCommand, match) => {
     await postError(`Invalid command: \`${userCommand}\`\n${COMMAND_USAGE}`)
 
   // TODO: Support other file types.
-  if (!match[1].endsWith('.md') || !match[2].endsWith('.md')) {
+  if (!match[1].endsWith('.md') || !match[2].endsWith('.md') || !match[1].endsWith('.mdx') || !match[2].endsWith('.mdx')) {
     await postError('Error: File must be a markdown file.')
   }
 }
